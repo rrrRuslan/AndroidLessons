@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +36,8 @@ class FirstFragment : Fragment() {
     private lateinit var button: Button
     private lateinit var buttonColor: Button
 
+    lateinit var viewModel: SharedViewModel
+
 
     lateinit var mCallback: TextSendListener
 
@@ -46,18 +50,18 @@ class FirstFragment : Fragment() {
         this.mCallback = callback
     }
 
-    fun yourMethodofSendingText() {
-        //here you can get the text from the edit text or can use this method according to your need
+    fun myMethodOfSendingText() {
         mCallback.sendText(editText.text.toString())
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+//        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        viewModel = activity?.run {
+            ViewModelProvider(this).get(SharedViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
     }
 
     override fun onCreateView(
@@ -65,29 +69,30 @@ class FirstFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        var view =  inflater.inflate(R.layout.fragment_first, container, false)
+        var view = inflater.inflate(R.layout.fragment_first, container, false)
+
+
 
         textView = view.findViewById(R.id.fr1_text)
         editText = view.findViewById(R.id.fr1_input)
         button = view.findViewById(R.id.fr1_button)
         buttonColor = view.findViewById(R.id.colorButton)
 
+        textView.text = "First fragment"
+
+        viewModel.getText().observe(this, {
+            updateText(it)
+        } )
+
         buttonColor.setOnClickListener {
             val fragment = fragmentManager?.findFragmentById(R.id.container_b)
             fragment?.view?.setBackgroundColor(Color.RED)
         }
         button.setOnClickListener {
-//            viewModel.setText(editText.text.toString())
-/*
-            val bundle = Bundle()
-            bundle.putString("key", editText.text.toString())
-            var secondFragment = SecondFragment()
 
-            secondFragment.arguments = bundle
-            activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.container_b, secondFragment)?.commit()*/
-
-            yourMethodofSendingText()
-
+//            myMethodOfSendingText()
+            Log.i("SENDING_TEXT_TO_ViewMOD", "onCreateView: ${editText.text.toString()}")
+            viewModel.setText(editText.text.toString())
         }
 
         return view
@@ -98,28 +103,8 @@ class FirstFragment : Fragment() {
 
     }
 
-
-
-
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FirstFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FirstFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun updateText(text: String) {
+        editText.setText(text)
     }
+
 }

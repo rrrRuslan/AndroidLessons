@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 
 class SharedViewModel : ViewModel() {
 
-    private val text = MutableLiveData<CharSequence>()
+    private val text = MutableLiveData<String>()
 
-    fun setText(input: CharSequence) {
+    fun setText(input: String) {
         text.value = input
     }
 
-    fun getText(): LiveData<CharSequence> {
+    fun getText(): LiveData<String> {
         return text
     }
 
