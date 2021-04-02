@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MentorTask</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="default_text_fragment">DEFAULT TEXT</string>
+    <string name="send_button_name">SEND TEXT TO ANOTHER FRAGMENT</string>
+    <string name="hint">ENTER TEXT TO BE SENT TO ANOTHER FRAGMENT</string>
+
+</resources>
